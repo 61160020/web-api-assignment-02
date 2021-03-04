@@ -27,5 +27,16 @@ app.post('/books', (req,res) => {
     res.status(201).json(bookID)
 })
 
+app.get('/books/:id', (req,res) => {
+    
+    let id = req.params.id
+    let book = {}
+    
+    book = books[id]
+    res.status(200).json(book)
+
+})
+
+
 const port = 3000
 app.listen(port, () => console.log(`Server started at ${port}`))

@@ -1,10 +1,23 @@
 const express = require('express')
+const MongoClient = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectId
 const app = express()
 
 app.use(express.json())
 let books = []
 
-app.post('/books', (req,res) => {
+const uri = 'mongodb+srv://warakorn:warakorn14@cluster0.pcrnh.mongodb.net/buzon?retryWrites=true&w=majority'
+const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true})
+let db, booksCollection
+
+async function connect(){
+    await client.connect()
+    db = client.db('buzon')
+    booksCollection = db.collection('books')
+}
+connect()
+
+app.post('/books', async (req,res) => {
     
     let newtitle = req.body.title
     let newprice  = req.body.price
@@ -22,8 +35,9 @@ app.post('/books', (req,res) => {
      }
     let bookID = 0
 
-    books.push(newBook)   
-    bookID = books.length - 1 
+    const result = await booksCollection.insertOne(newBook)
+    bookID = result.insertedId
+
     res.status(201).json(bookID)
 })
 

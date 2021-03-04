@@ -41,12 +41,12 @@ app.post('/books', async (req,res) => {
     res.status(201).json(bookID)
 })
 
-app.get('/books/:id', (req,res) => {
+app.get('/books/:id', async (req,res) => {
     
     let id = req.params.id
-    let book = {}
     
-    book = books[id]
+    const book = await booksCollection.findOne({ _id: ObjectId(id) })
+    
     res.status(200).json(book)
 
 })
